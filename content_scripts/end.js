@@ -1,9 +1,7 @@
-// Класс веселых кнопок
 class funButtons {
-  isExist = false;          // Были ли кнопки созданы
-  updateTime = 10;          // С каким интервалом (в мс.) вызывается функция проверки адреса
+  isExist = false;
+  updateTime = 10;
 
-  // Список кнопок
   buttonSamples = [
     { message: 'Пошел нахуй!🖕🏻' },
     { message: 'Ясно' },
@@ -14,13 +12,11 @@ class funButtons {
     { message: 'Осуждаю' },
     { message: 'Ахапхахпхах' },
     { message: 'Получается так' }
-  ]
+  ];
 
-  // Конструктор
   constructor() {
-    this.pageListener = setInterval( this.locationChecker.bind( this ), this.updateTime ); // Устанавливаем интервал на функцию проверки адреса
+    this.pageListener = setInterval( this.locationChecker.bind( this ), this.updateTime );
 
-    // Зададим стили для наших кнопок
     let head = document.getElementsByTagName( 'head' )[ 0 ],
       style = document.createElement( 'style' );
 
@@ -49,46 +45,37 @@ class funButtons {
     head.appendChild( style );
   }
 
-  // Проверяет адрес
   locationChecker() {
-    // Если мы находимся не на странице сообщений, ставим маркер, что кнопок нет и выходим
+
     if ( window.location.pathname.search( '/im' ) === -1 ) {
       this.isExist = false;
       return;
     }
 
-    // Мы на странице сообщений
-    // Если кнопки уже существуют, то обновляем их видимость, если это надо
     if ( this.isExist ) {
       this.updateVisibility();
       return;
     }
 
-    // Мы на странице сообщений
-    // Кнопок нет
-    this.createButton();              // Создаем кнопки
-    this.isExist = true;              // Ставим маркер, что кнопки были созданы
-    this.updateVisibility();          // Обновляем их видимость
+    this.createButton();
+    this.isExist = true;
+    this.updateVisibility();
   }
 
-  // Обновляет видимость кнопок
   updateVisibility() {
-    // Если история сообщений пустая, значит не открыт ни один диалог
     document.querySelector( '.im-page--history_empty' ) !== null
-      ? ( document.querySelector( '#funWrapper' ).classList.add( 'funHide' ) )              // Если да, то устанавливаем класс, что бы спрятать кнопки
-      : ( document.querySelector( '#funWrapper' ).classList.remove( 'funHide' ) );          // Иначе Убираем этот класс
+      ? ( document.querySelector( '#funWrapper' ).classList.add( 'funHide' ) )
+      : ( document.querySelector( '#funWrapper' ).classList.remove( 'funHide' ) );
   }
 
-  // Создаем кнопки
   createButton() {
-    let landlord = document.querySelector( '.im-right-menu' );                    // Записываем то, куда потом будем вставлять кнопки
-    let messageInput = document.querySelector( '.im-chat-input--text' );          // Записываем поле, куда будем писать текст сообщения
-    let messageSend = document.querySelector( '.im-chat-input--send' );           // Записываем кнопку отправки сообщений
+    let landlord = document.querySelector( '.im-right-menu' );
+    let messageInput = document.querySelector( '.im-chat-input--text' );
+    let messageSend = document.querySelector( '.im-chat-input--send' );
 
-    let funWrapper = document.createElement( 'div' );                             // Создаем контейнер для хранения всех наших кнопок
-    funWrapper.id = 'funWrapper';                                                 // Устанавливаем ему id
+    let funWrapper = document.createElement( 'div' );
+    funWrapper.id = 'funWrapper';
 
-    // Переберем кнопки в массиве кнопок и создадим их
     this.buttonSamples.forEach( ( buttonSample ) => {
       let button = document.createElement( 'button' );
       let buttonText = buttonSample.message;

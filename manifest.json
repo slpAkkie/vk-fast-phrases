@@ -1,24 +1,23 @@
 {
-    "name": "funButtons",
-    "version": "1.0.0.0",
-    "manifest_version": 2,
+    "name": "vkFastPhrases",
+    "version": "0.1.0.1",
+    "description": "A way to quickly send prepared messages",
+    "permissions": [
+        "storage"
+    ],
     "content_scripts": [
         {
             "matches": [
                 "https://vk.com/*"
             ],
             "js": [
-                "content_scripts/background.js",
-                "content_scripts/chrome_messages.js"
+                "content_scripts/end.js"
             ],
             "run_at": "document_end"
         }
     ],
-    "browser_action": {
-        "default_title": "Кнопоцка",
-        "default_popup": "popup/popup.html"
+    "icons": {
+        "72": "image/72.png"
     },
-    "permissions": [
-        "storage"
-    ]
+    "manifest_version": 2
 }
