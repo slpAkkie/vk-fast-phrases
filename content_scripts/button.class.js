@@ -37,7 +37,7 @@ class _Button {
 
     let bText = document.createElement( vkfpSettings.tags.bText );
     bText.classList.add( vkfpSettings.classes.bText );
-    bText.textContent = this._text;
+    bText.innerHTML = this._text;
 
 
     let bDel = document.createElement( vkfpSettings.tags.bDel );
