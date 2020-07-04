@@ -1,16 +1,25 @@
 {
-    "name": "ICIN",
-    "version": "1.0.0.0",
-    "manifest_version": 2,
+    "name": "vkFastPhrases",
+    "version": "0.2.0.1",
+    "description": "A way to quickly send prepared messages",
+    "permissions": [
+        "storage"
+    ],
     "content_scripts": [
         {
             "matches": [
                 "https://vk.com/*"
             ],
             "js": [
-                "content_scripts/end.js"
+                "content_scripts/settings.class.js",
+                "content_scripts/button.class.js",
+                "content_scripts/VKFP-app.js"
             ],
             "run_at": "document_end"
         }
-    ]
+    ],
+    "icons": {
+        "72": "image/72.png"
+    },
+    "manifest_version": 2
 }
