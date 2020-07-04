@@ -50,9 +50,9 @@ class _vkfpSettings {
     .VKFP-button {
       display: block;
       width: 100%;
-      background: linear-gradient(45deg, #242fbd, #632eb7);
-      color: white;
-      box-shadow: 0 0 15px -5px rgba(0, 0, 0, .75);
+      background: white;
+      color: black;
+      box-shadow: 0 0 15px -5px rgba(0, 0, 0, .25);
       font-size: 13px;
       font-weight: 600;
       text-align: center;
@@ -68,7 +68,7 @@ class _vkfpSettings {
       font-size: 16px;
       width: 12px;
       height: 12px;
-      background: url(/images/icons/im_actions.png) -4px -67px;
+      background: url(/images/icons/im_actions.png) -4px -81px;
       position: absolute;
       top: calc(50% - 6px);
       right: 10px;
@@ -77,7 +77,7 @@ class _vkfpSettings {
       opacity: 1;
     }
     .VKFP-delete:hover {
-      background: url(/images/icons/im_actions.png) -4px -81px;
+      background: url(/images/icons/im_actions.png) -4px -67px;
     }
   `;
 
