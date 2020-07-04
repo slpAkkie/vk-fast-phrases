@@ -1,6 +1,6 @@
 {
     "name": "vkFastPhrases",
-    "version": "0.1.1.2",
+    "version": "0.2.0.1",
     "description": "A way to quickly send prepared messages",
     "permissions": [
         "storage"
