@@ -20,28 +20,7 @@ class funButtons {
     let head = document.getElementsByTagName( 'head' )[ 0 ],
       style = document.createElement( 'style' );
 
-    style.innerText = `
-      .funHide {
-        visibility: hidden;
-      }
-      #funWrapper {
-        width: 100%;
-        margin: 10px 0;
-      }
-      button.funButton {
-        display: block;
-        width: 100%;
-        padding: 10px 5px;
-        border: none;
-        border-radius: 2rem;
-        background: linear-gradient(45deg, #3337bd, #5f14a5);
-        color: white;
-        font-size: 14px;
-        font-weight: 600;
-        box-shadow: 0px 2px 25px -5px rgba(0, 0, 0, 0.5);
-        margin: 10px 0;
-        cursor: pointer;
-      }`;
+    style.innerText = vkfpSettings.styles;
     head.appendChild( style );
   }
 
@@ -57,40 +36,40 @@ class funButtons {
       return;
     }
 
-    this.createButton();
+    this.createButtons();
     this.isExist = true;
     this.updateVisibility();
   }
 
   updateVisibility() {
     document.querySelector( '.im-page--history_empty' ) !== null
-      ? ( document.querySelector( '#funWrapper' ).classList.add( 'funHide' ) )
-      : ( document.querySelector( '#funWrapper' ).classList.remove( 'funHide' ) );
+      ? ( document.querySelector( '#VKFP-container' ).classList.add( 'VKFP-hide' ) )
+      : ( document.querySelector( '#VKFP-container' ).classList.remove( 'VKFP-hide' ) );
   }
 
-  createButton() {
+  createButtons() {
     let landlord = document.querySelector( '.im-right-menu' );
     let messageInput = document.querySelector( '.im-chat-input--text' );
     let messageSend = document.querySelector( '.im-chat-input--send' );
 
     let funWrapper = document.createElement( 'div' );
-    funWrapper.id = 'funWrapper';
+    funWrapper.id = 'VKFP-container';
 
     this.buttonSamples.forEach( ( buttonSample ) => {
-      let button = document.createElement( 'button' );
-      let buttonText = buttonSample.message;
-      button.classList.add( 'funButton' );
-      button.textContent = buttonText;
 
-      button.addEventListener( 'click', () => {
-        messageInput.innerHTML = buttonText;
+      let bObj = new Button( buttonSample.message );
+      let button = bObj.createButton();
+
+      button.addEventListener( 'click', ( e ) => {
+        if ( e.toElement.classList.value == 'VKFP-delete' ) return;
+        messageInput.innerHTML = buttonSample.message;
         messageSend.click();
       } );
 
-      funWrapper.appendChild( button );
+      funWrapper.append( button );
     } );
 
-    landlord.appendChild( funWrapper );
+    landlord.append( funWrapper );
   }
 }
 
