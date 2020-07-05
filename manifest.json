@@ -1,7 +1,10 @@
 {
+    "manifest_version": 2,
     "name": "vkFastPhrases",
-    "version": "1.2.1.2",
+    "version": "1.2.2.0",
+    "version_name": "1.2.2.0-beta",
     "description": "A way to quickly send prepared messages",
+    "author": "slpakkie",
     "permissions": [
         "storage"
     ],
@@ -10,16 +13,25 @@
             "matches": [
                 "https://vk.com/*"
             ],
+            "css": [
+                "content_scripts/style.css"
+            ],
             "js": [
                 "content_scripts/settings.class.js",
                 "content_scripts/button.class.js",
                 "content_scripts/VKFP-app.js"
             ],
-            "run_at": "document_end"
+            "run_at": "document_idle"
         }
     ],
+    "browser_action": {
+        "default_icon": {
+            "72": "image/72.png"
+        },
+        "default_title": "vkFastPhrases Settings",
+        "default_popup": "page_action/popup.html"
+    },
     "icons": {
         "72": "image/72.png"
-    },
-    "manifest_version": 2
+    }
 }

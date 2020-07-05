@@ -116,8 +116,8 @@ class _vkfp {
 
   add() {
     let chatInput = document.querySelector( vkfpSettings.queries.chatInput ),
-	    emoji = chatInput.querySelectorAll('img.emoji');
-    emoji.forEach((emj) => {emj.replaceWith(emj.getAttribute('alt'))});
+      emoji = chatInput.querySelectorAll( 'img.emoji' );
+    emoji.forEach( ( emj ) => { emj.replaceWith( emj.getAttribute( 'alt' ) ) } );
     let bText = chatInput.innerHTML;
     if ( bText.length === 0 ) return;
     let nButton = { text: bText, id: vkfpSettings.buttonSamples.length, styleId: 0 };

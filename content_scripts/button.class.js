@@ -59,7 +59,7 @@ class _Button {
 
     if ( eClick.toElement.classList.value == vkfpSettings.classes.bDel ) return;
 
-    chatInput.innerHTML = this._text;
+    chatInput.innerHTML += this._text;
     chatSend.click();
   }
 
