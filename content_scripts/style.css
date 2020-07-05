@@ -1,3 +1,60 @@
 #ads_left {
   display: none;
 }
+#VKFP-container {
+  width: 100%;
+  margin: 10px 0;
+}
+#VKFP-container  * {
+  transition-property: opacity;
+  transition-duration: .25s;
+  transition-timing-function: ease;
+}
+.VKFP-hidden {
+  visibility: hidden;
+}
+.VKFP-button {
+  display: block;
+  width: 100%;
+  background: white;
+  color: black;
+  box-shadow: 0 0 15px -5px rgba(0, 0, 0, .25);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  border-radius: 20px;
+  padding: 8px 0;
+  margin: 8px 0;
+  cursor: pointer;
+  position: relative;
+}
+.VKFP-button:not(#VKFP-new):hover {
+  color: #4157f5;
+}
+.VKFP-delete {
+  opacity: 0;
+  display: inline-block;
+  font-size: 16px;
+  width: 12px;
+  height: 12px;
+  background: url(/images/icons/im_actions.png) -4px -81px;
+  position: absolute;
+  top: calc(50% - 6px);
+  right: 10px;
+}
+.VKFP-button:hover .VKFP-delete {
+  opacity: 1;
+}
+.VKFP-deletehover {
+  background: url(/images/icons/im_actions.png) -4px -67px;
+}
+#VKFP-new {
+  height: 15px;
+  color: transparent;
+  font-weight: 100;
+  background: url(data:image/svg+xml;charset=utf-8,%3Csvg%20height%3D%2214%22%20viewBox%3D%220%200%2014%2014%22%20width%3D%2214%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22m8%206v-6h-2v6h-6v2h6v6h2v-6h6v-2z%22%20fill%3D%22%2391a8c4%22%2F%3E%3C%2Fsvg%3E) rgba(50, 50, 78, 0.75) 50% 50% no-repeat;
+  opacity: .75;
+}
+#VKFP-new:hover {
+  opacity: 1;
+}

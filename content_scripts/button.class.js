@@ -7,64 +7,75 @@ class _Button {
     this._id = id;
     this._styleId = styleId;
 
-    /** Создаем ее */
-    this.createButton();
+    /** Создаем кнопку */
+    this.buildButton();
 
     /** Возвращаем */
   }
 
-  /** возвращает объект элемента кнопки */
+  /** Возвращает DOM-элемент кнопки */
   get() {
     return this.button;
   }
 
-  /** Функция возвращает необходимые элементы страницы для добавления кнопок */
+  /** Получение необходимых для постройки кнопки элементов */
   getDependepncies() {
     let chatInput = document.querySelector( vkfpSettings.queries.chatInput ),
       chatSend = document.querySelector( vkfpSettings.queries.chatSend );
 
+    /** Если не получается получить какой-либо элемент возвращаем false */
     if ( chatInput === null || chatSend === null ) return { result: false };
     else return { result: true, chatInput, chatSend };
   }
 
   /** Функция создает кнопку */
-  createButton() {
-    /** Обертка кнопки */
+  buildButton() {
+    /** Создаем обертку кнопки */
     this.button = document.createElement( vkfpSettings.tags.button );
     this.button.id = `VKFP-button${this._id}`;
     this.button.classList.add( vkfpSettings.classes.button );
 
-
+    /** Создаем поле текста */
     let bText = document.createElement( vkfpSettings.tags.bText );
     bText.classList.add( vkfpSettings.classes.bText );
     bText.innerHTML = this._text;
 
-
+    /** Создаем кнопку удаления */
     let bDel = document.createElement( vkfpSettings.tags.bDel );
     bDel.classList.add( vkfpSettings.classes.bDel );
     bDel.addEventListener( 'click', this.delete.bind( this ) );
 
 
+    /** Добавляем текст и кнопку удаления в обертку */
     this.button.append( bText, bDel );
 
+    /** Добавляем событие клик */
     this.button.addEventListener( 'click', this.send.bind( this ) );
   }
 
-  /** Функция отправки сообщения соответствующего кнопке */
+  /** Отправка сообщения */
   send( eClick ) {
-    let deps = this.getDependepncies();
-    if ( deps.result === false ) return;
-
-    let { chatInput, chatSend } = deps;
-
+    /** Если клик был по кнопке удаления - Выходим */
     if ( eClick.toElement.classList.value == vkfpSettings.classes.bDel ) return;
 
+    /** Получаем необхожимые элементы */
+    let deps = this.getDependepncies();
+    /** Если не получилось получить элементы - Выходим */
+    if ( deps.result === false ) return;
+
+    /** Разбираем объект */
+    let { chatInput, chatSend } = deps;
+
+    /** Записываем в поле сообщения текст кнопки и нажимаем отправить */
     chatInput.innerHTML += this._text;
     chatSend.click();
   }
 
+  /** Удаление кнопки */
   delete() {
+    /** Удаляем кнопку из DOM */
     this.button.remove();
+    /** Удаляем ее из конфигурации */
     vkfp.deleteButton( this._id );
     vkfp.updateStorage();
   }

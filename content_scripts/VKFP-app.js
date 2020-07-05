@@ -1,139 +1,160 @@
-/** Объект настроек расширения */
+/** инициализируем конфигурацию приложения */
 let vkfpSettings = new _vkfpSettings();
 
 /** Класс приложения */
 class _vkfp {
-  /** Массив всех кнопок */
+  /** Объект хранит все наши кнопки находящиеся на странице */
   _buttonList = {};
 
   constructor() {
     // chrome.storage.local.clear();
 
+    // Проверяем хранилище
     chrome.storage.local.get( null, ( value ) => {
-      if ( value.isSaved === undefined ) {
-        chrome.storage.local.set( { isSaved: true } );
-        this.updateStorage();
-
-        alert( `
-Вы впревые запустили расширение.
-Для того что бы использовать кнопку зайдите в любой диалог и нажмите на нее
-Для того что бы удалить кнопку, наведите на нее и нажмите крестик.
-Для того что бы добавить кнопку напечатайте текст в поле сообщения и нажмите плюсик
-        `);
-
-      } else {
-        chrome.storage.local.get( 'buttons', ( ( value ) => {
-          vkfpSettings.buttonSamples = JSON.parse( value.buttons );
-        } ) );
+      if ( value.firstLunch === undefined ) {
+        // Поблагодарим за уставноку
+        alert( `Спасибо за установку расширения\nЧтобы прочитать больше про расширение нажмите цветную икноку расширения около адресной строки вашего браузера` );
+        // И запишем, что пользователь уже видел это сообщение
+        chrome.storage.local.set( { firstLunch: false } );
       }
 
-      /** Создание стилей и их вставка */
-      let vkfpStyles = document.createElement( 'style' );
-      vkfpStyles.innerText = vkfpSettings.styles;
-      document.getElementsByTagName( 'head' )[ 0 ].append( vkfpStyles );
+      if ( value.isSaved === undefined || value.isSaved === false ) {
+        // Если поля isSaved нет или оно установлено в False, значит конфигурация не сохранена или ее нет
+        // Поэтому мы загрузим конфигурацию по умолчанию
+        this.updateStorage();
+        chrome.storage.local.set( { isSaved: true } );
+      } else {
+        // Иначе загрузим ее из хранилища
+        chrome.storage.local.get( 'buttons', ( ( value ) => {
+          vkfpSettings.buttonSamples = value.buttons === undefined ? [] : JSON.parse( value.buttons );
+        } ) );
+      }
 
       /** Интервал для мониторинга url */
       vkfpSettings.pageListener = setInterval( this.locationChecker.bind( this ), vkfpSettings.updateTime );
     } );
   }
 
+  // Обновление конфигурации в хранилище
   updateStorage() {
     chrome.storage.local.set( { buttons: JSON.stringify( vkfpSettings.buttonSamples ) } );
   }
 
-  /** Функция мониторинга url */
+  /** Мониторинг url */
   locationChecker() {
     try {
-      /** Если мы не на странице диалогов, то кнопок нет, и добавлять их некуда */
+      /** Если мы не на странице диалогов, то кнопок нет, и добавлять их некуда - Выходим */
       if ( window.location.pathname.search( '/im' ) === -1 ) {
         vkfpSettings.isExist = false;
         return;
       }
 
-      /** Если мы на странице диалогов и кнопки уже созданы, обновляем видимость */
+      /** Если кнопки уже созданы, обновляем видимость и выходим */
       if ( vkfpSettings.isExist ) {
         this.updateVisibility();
         return;
       }
-      /** Если мы на странице диалогов и кнопок нет, то создаем их и задаем им видимость */
+      /** Если кнопок нет, то создаем из и задаем видимость */
       this.loadButtons();
       vkfpSettings.isExist = true;
       this.updateVisibility();
     } catch ( e ) {
-      this.printError( e );
+      this.stopByError( e );
     }
   }
 
-  /** Функция создания кнопок */
+  /** Загрузка кнопок из заготовок */
   loadButtons() {
-    /** Куда будем вставлять блок с кнопками - Арендодатель */
+    /** Родительский блок для всего блока кнопок */
     let landlord = document.querySelector( vkfpSettings.queries.landlord ) || document.querySelector( vkfpSettings.queries.secondaryLandlord ) || null;
-    if ( landlord === null ) return;
+    /** Если по каким-либо причинам не получается получить родительский блок, выходим */
+    if ( landlord === null ) {
+      /** Оповестим об ошибке */
+      this.stopByError( 'Родительский блок (landlord) не был получен' );
+      return;
+    }
 
     /** Контейнер для всех кнопок */
     this.vkfpContainer = document.createElement( vkfpSettings.tags.container );
     this.vkfpContainer.id = vkfpSettings.IDs.container;
 
+    /** Обертка для кнопок пользователя */
     this.vkfpBWrapper = document.createElement( vkfpSettings.tags.bWrapper );
     this.vkfpBWrapper.id = vkfpSettings.IDs.bWrapper;
 
-    /** Перебираем стандартный набор кнопок и добавляем их на страницу */
-    vkfpSettings.buttonSamples.forEach( ( buttonSample ) => {
-      this.createButton( buttonSample );
-    } );
+    /** Перебираем заготовки кнопок и добавляем их на страницу */
+    vkfpSettings.buttonSamples.forEach( ( buttonSample ) => { this.createButton( buttonSample ); } );
 
+    /** Создаем кнопку для добавления новых пользовательских кнопок */
     let bNew = document.createElement( vkfpSettings.tags.button );
     bNew.id = vkfpSettings.IDs.bNew;
     bNew.classList.add( vkfpSettings.classes.button );
-    bNew.textContent = 'Добавить кнопку';
     bNew.addEventListener( 'click', this.add.bind( this ) );
 
+    /** Закидываем все кнопки в контейнер */
     this.vkfpContainer.append( this.vkfpBWrapper, bNew );
 
-    /** Добавялем полученный блок кнопок в блок Арендодателя */
+    /** Добавляем контейнер в родительский блок */
     landlord.append( this.vkfpContainer );
   }
 
+  /** Создание и добавление кнопки */
   createButton( sample ) {
-    /** Создаем кнопку */
+    /** Создаем кнопку через конструктор объекта */
     this._buttonList[ sample.id ] = new _Button( sample );
     /** Вставляем кнопку в контейнер */
     this.vkfpBWrapper.append( this._buttonList[ sample.id ].get() );
   }
 
-  /** Функция обновления видимости блока кнопок */
+  /** Обновление видимости блока кнопок */
   updateVisibility() {
-    /** Если мы не на странцие конкретного диалога, то скрываем блок кнопок */
+    /** Если не открыт диалог - скрыть блок */
     document.querySelector( vkfpSettings.queries.pageHistory ) === null
       ? ( document.querySelector( vkfpSettings.queries.container ).classList.add( vkfpSettings.classes.hidden ) )
       : ( document.querySelector( vkfpSettings.queries.container ).classList.remove( vkfpSettings.classes.hidden ) );
   }
 
+  /** Удаление кнопки */
   deleteButton( id ) {
+    /** Смещаем все кнопки, идущие за удаляемой к началу на одну позицию */
     for ( let i = id; i < vkfpSettings.buttonSamples.length - 1; i++ ) vkfpSettings.buttonSamples[ i ] = vkfpSettings.buttonSamples[ i + 1 ];
+    /** И уменьшаем длину массива */
     vkfpSettings.buttonSamples.length -= 1;
   }
 
+  /** Добавить новую кнопку */
   add() {
+    /** ПОлучаем содержимое поля сообщения и эмодзи в нем */
     let chatInput = document.querySelector( vkfpSettings.queries.chatInput ),
       emoji = chatInput.querySelectorAll( 'img.emoji' );
+    /** Заменяем тэг img, содержащий эмодзи, на его атрибут alt, хранящий только сам эмодзи */
     emoji.forEach( ( emj ) => { emj.replaceWith( emj.getAttribute( 'alt' ) ) } );
+    /** Запоминаем текст из поля сообщения */
     let bText = chatInput.innerHTML;
+    /** Если поле сообщения было пустым - выходим */
     if ( bText.length === 0 ) return;
+    /** Создаем заготовку кнопки */
     let nButton = { text: bText, id: vkfpSettings.buttonSamples.length, styleId: 0 };
+    /** Создаем кнопку */
     this.createButton( nButton );
+    /** Добавляем в список */
     vkfpSettings.buttonSamples.push( nButton );
+    /** Обновляем хранилище, что бы добавить туда новую кнопку */
     this.updateStorage();
+    /** Очищаем поле сообщения */
     chatInput.innerHTML = null;
   }
 
-  printError( e ) {
+  /** Остановить работу приложения с сообщением об ошибке */
+  stopByError( e ) {
+    /** Оповещаем пользователе об ошибке и выводим лог */
     alert( 'Во время работы расширения произошла ошибка\nРабота расширения приостановлена' );
     console.error( e );
 
+    /** Очищаем интервал, что бы не копить ошибки */
     clearInterval( vkfpSettings.pageListener );
   }
 }
 
-/** Создаем объект приложения */
+/** Запускаем приложение */
 let vkfp = new _vkfp();
