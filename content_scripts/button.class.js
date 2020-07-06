@@ -1,83 +1,116 @@
-/** Класс кнопок */
+/**
+ * Класс описывающий кнопку
+ */
 class _Button {
-  constructor( buttonSample ) {
-    /** Задаем параметры кнопки */
-    let { text, id, styleId } = buttonSample;
-    this._text = text;
-    this._id = id;
-    this._styleId = styleId;
 
-    /** Создаем кнопку */
-    this.buildButton();
+  constructor( sample ) {
 
-    /** Возвращаем */
+    let { pos, style, alias, message, attaches } = sample;
+    this._pos = pos;
+    this._style = style;
+    this._alias = alias;
+    this._message = message;
+    this._attaches = attaches;
+
+    this.create();
   }
 
-  /** Возвращает DOM-элемент кнопки */
-  get() {
-    return this.button;
+
+
+
+
+  /**
+   * Получение dom-элемента
+   */
+  get dom() {
+    return this._domObject;
   }
 
-  /** Получение необходимых для постройки кнопки элементов */
-  getDependepncies() {
-    let chatInput = document.querySelector( vkfpSettings.queries.chatInput ),
-      chatSend = document.querySelector( vkfpSettings.queries.chatSend );
 
-    /** Если не получается получить какой-либо элемент возвращаем false */
-    if ( chatInput === null || chatSend === null ) return { result: false };
-    else return { result: true, chatInput, chatSend };
+
+
+
+  /**
+   * Создание кнопки
+   */
+  create() {
+
+    this._domObject = document.createElement( 'div' );
+    this._domObject.id = `vkfpButton${this._pos}`;
+    this._domObject.classList.add( `vkfpButton` );
+    this._domObject.addEventListener( `click`, this.send.bind( this ) );
+
+
+
+    let buttonText = document.createElement( `span` );
+    buttonText.classList.add( `vkfpText` );
+    buttonText.textContent = this._alias || this._message || `Кнопочка`;
+
+
+
+    let buttonDelete = document.createElement( `span` );
+    buttonDelete.classList.add( `vkfpDelete` );
+    buttonDelete.addEventListener( `click`, this.delete.bind( this ) );
+
+
+
+    this._domObject.append( buttonText, buttonDelete );
+
   }
 
-  /** Функция создает кнопку */
-  buildButton() {
-    /** Создаем обертку кнопки */
-    this.button = document.createElement( vkfpSettings.tags.button );
-    this.button.id = `VKFP-button${this._id}`;
-    this.button.classList.add( vkfpSettings.classes.button );
-
-    /** Создаем поле текста */
-    let bText = document.createElement( vkfpSettings.tags.bText );
-    bText.classList.add( vkfpSettings.classes.bText );
-    bText.innerHTML = this._text;
-
-    /** Создаем кнопку удаления */
-    let bDel = document.createElement( vkfpSettings.tags.bDel );
-    bDel.classList.add( vkfpSettings.classes.bDel );
-    bDel.addEventListener( 'click', this.delete.bind( this ) );
 
 
-    /** Добавляем текст и кнопку удаления в обертку */
-    this.button.append( bText, bDel );
 
-    /** Добавляем событие клик */
-    this.button.addEventListener( 'click', this.send.bind( this ) );
-  }
 
-  /** Отправка сообщения */
-  send( eClick ) {
-    /** Если клик был по кнопке удаления - Выходим */
-    if ( eClick.toElement.classList.value == vkfpSettings.classes.bDel ) return;
+  /**
+   * Отправка сообщения
+   */
+  send( click ) {
+    if ( click.toElement.classList.value == 'vkfpDelete' ) return;
 
-    /** Получаем необхожимые элементы */
-    let deps = this.getDependepncies();
-    /** Если не получилось получить элементы - Выходим */
+
+
+    let deps = app.getDeps();
     if ( deps.result === false ) return;
 
-    /** Разбираем объект */
-    let { chatInput, chatSend } = deps;
 
-    /** Записываем в поле сообщения текст кнопки и нажимаем отправить */
-    chatInput.innerHTML += this._text;
-    chatSend.click();
+
+    deps.chatInput.textContent += this._message;
+    for ( let key in this._attaches ) {
+      let script = document.createElement( `script` );
+      script.innerText = `cur.addMedia[ 1 ].chooseMedia.pbind( '${key}', '${this._attaches[ key ]}', {} )();`;
+      document.body.appendChild( script );
+      script.remove();
+    }
+
+
+
+    deps.chatSend.click();
   }
 
-  /** Удаление кнопки */
+
+
+
+
+  /**
+   * Удаление кнопки
+   */
   delete() {
-    /** Удаляем кнопку из DOM */
-    this.button.remove();
-    /** Удаляем ее из конфигурации */
-    vkfp.deleteButton( this._id );
-    vkfp.updateStorage();
+
+    app._buttons[ this._pos ].dom.remove();
+
+
+
+    delete app._buttons[ this._pos ];
+
+    for ( let i = this._pos; i < app.templates.length - 1; i++ ) {
+      app.templates[ i ] = app.templates[ i + 1 ];
+      this._pos = i;
+      app._buttons[ i ][ this._pos ] = i;
+    }
+
+    app.templates.length -= 1;
+
   }
 
 }

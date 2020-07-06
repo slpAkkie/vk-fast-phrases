@@ -4,22 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>VKFP Settings</title>
-  <style>
-    html {
-      width: 400px;
-    }
-
-    .storageControls {
-      width: 100%;
-      border: none;
-      background: #3d67a5;
-      color: white;
-      border-radius: .25rem;
-      padding: 5px 10px;
-      margin: 5px auto;
-      cursor: pointer;
-    }
-  </style>
+  <link rel="stylesheet" href="popup.css">
 </head>
 
 <body>
@@ -33,16 +18,17 @@
   </ul>
 
   <h2>Управление хранилищем</h2>
-  <button class="storageControls" id="js-cleanStorage">Очистить хранилище (Удалить всю
-    конфигурацию)</button>
-  <button class="storageControls" id="js-restoreStorage">Восстановить конфигурацию (По умолчанию)</button>
-  <button class="storageControls" id="js-dumpStorage">Вывести конфигурацию</button>
+  <button class="storageControls" id="js-cleanStorage">Очистить конфигурация</button>
+  <button class="storageControls" id="js-wipeStorage">Сбросить хранилище</button>
+  <button class="storageControls" id="js-restoreStorage">Восстановить конфигурацию по умолчанию</button>
+  <button class="storageControls" id="js-dumpStorage">Дамп хранилища</button>
 
   <p id="js-storageInfo"></p>
 
   <h2>Дамп хранилища</h2>
-  <div class="log-data" id="js-log">Дамп не был задан</div>
+  <div class="log-data" id="js-log"></div>
 
+  <script src="popup.class.js"></script>
   <script src="popup.js"></script>
 </body>
 

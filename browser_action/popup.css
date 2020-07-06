@@ -1,0 +1,14 @@
+html {
+  width: 400px;
+}
+
+.storageControls {
+  width: 100%;
+  border: none;
+  background: #3d67a5;
+  color: white;
+  border-radius: .25rem;
+  padding: 5px 10px;
+  margin: 5px auto;
+  cursor: pointer;
+}
