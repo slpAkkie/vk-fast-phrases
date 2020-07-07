@@ -39,6 +39,10 @@ class _Button {
     this._domObject.id = `vkfpButton${this._pos}`;
     this._domObject.classList.add( `vkfpButton` );
     this._domObject.addEventListener( `click`, this.send.bind( this ) );
+	
+	
+	
+	if ( this._attaches !== null ) this._domObject.classList.add( `vkfpButtonWithAttach` );
 
 
 
@@ -78,7 +82,11 @@ class _Button {
     deps.chatInput.textContent += this._message;
     for ( let key in this._attaches ) {
       let script = document.createElement( `script` );
-      script.innerText = `cur.addMedia[ 1 ].chooseMedia.pbind( '${key}', '${this._attaches[ key ]}', {} )();`;
+      script.innerText = `
+	  try {
+		cur.addMedia[ 1 ].chooseMedia.pbind( '${key}', '${this._attaches[ key ]}', {} )();
+	  } catch { }
+	  `;
       document.body.appendChild( script );
       script.remove();
     }

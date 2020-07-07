@@ -25,6 +25,13 @@
   position: relative;
   cursor: pointer;
 }
+.vkfpButtonWithAttach {
+	background: #4d7cff;
+	color: #041649;
+}
+.vkfpButtonWithAttach:hover {
+	color: #ccdaff !important;
+}
 .vkfpButton:not(#VKFP-new):hover {
   color: #4157f5;
 }
