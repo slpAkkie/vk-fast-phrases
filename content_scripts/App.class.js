@@ -57,6 +57,14 @@ class _App {
 
 
 
+  saveConf() {
+    chrome.storage.local.set( { "samples": JSON.stringify( this._userTemplates ) } );
+  }
+
+
+
+
+
   /**
    * Проверяет адрес страницы и при открытой страницы сообщений загружает на страницу список кнопок
    */
@@ -101,9 +109,10 @@ class _App {
   getDeps() {
 
     let chatInput = document.querySelector( `.im-chat-input--text` ),
-      chatSend = document.querySelector( `.im-chat-input--send` );
+      chatSend = document.querySelector( `.im-chat-input--send` ),
+      photoAttaches = document.querySelector( `#thumbs_edit1` );
 
-    return { result: true, chatInput, chatSend };
+    return { chatInput, chatSend, attaches: { photo: photoAttaches } };
 
   }
 
@@ -154,7 +163,7 @@ class _App {
 
 
     /** Создание кнопок из конфига */
-    this._userTemplates.forEach( ( sample ) => { this.createButton( { type: `message`, ...sample } ) } );
+    this._userTemplates.forEach( ( sample ) => { this.createButton( { ...sample } ) } );
 
 
 
@@ -209,8 +218,21 @@ class _App {
   /**
    * Запрашивает краткое имя для кнопки
    */
-  getAlias() {
-    return null;
+  getAlias( forced = false ) {
+    let alias;
+
+
+
+    if ( forced )
+
+      while ( alias === undefined || alias === null || alias === `` )
+        alias = prompt( 'Сообщение не содержало текста\nВведите название для кнопки' );
+
+    else alias = 'Новая кнопка с фото';
+
+
+
+    return alias;
   }
 
 
@@ -221,7 +243,32 @@ class _App {
    * Возвращает список прикрепленных элементов
    */
   getAttaches() {
-    return null;
+    let deps = this.getDeps(),
+      photoAttaches = [],
+      attaches = {};
+
+
+
+    if ( deps.attaches.photo === null ) return null;
+
+
+
+    if ( deps.attaches.photo.childElementCount !== 0 ) {
+
+      let photoes = Array.from( deps.attaches.photo.children );
+
+      photoes.forEach( ( attach ) => {
+        photoAttaches.push( attach.getAttribute( `attachment` ).split( `photo` )[ 1 ] );
+      } )
+
+      attaches[ `photo` ] = photoAttaches;
+
+    } else {
+      return null;
+    }
+
+
+    return attaches;
   }
 
 
@@ -233,16 +280,13 @@ class _App {
    */
   addButton() {
     let deps = this.getDeps(),
-      emoji = deps.chatInput.querySelectorAll( `img.emoji` );
-
-
-
-    if ( deps.result === false ) return;
+      emoji = deps.chatInput.querySelectorAll( `img.emoji` ),
+      attaches = this.getAttaches();
 
 
 
     /** Если в поле пусто */
-    if ( deps.chatInput.innerHTML.length === 0 ) return;
+    if ( deps.chatInput.innerHTML.length === 0 && attaches === null ) return;
 
     emoji.forEach( ( emoji ) => { emoji.replaceWith( emoji.getAttribute( `alt` ) ) } );
 
@@ -251,11 +295,30 @@ class _App {
     let button = {
       "pos": this._userTemplates.length,
       "style": "default",
-      "alias": this.getAlias(),
+      "alias": ( deps.chatInput.innerHTML.length === 0 ? this.getAlias( true ) : `` ),
       "message": deps.chatInput.innerHTML,
-      "attaches": this.getAttaches()
+      "attaches": attaches
     };
 
+
+
+    deps.chatInput.innerHTML = ``;
+    document.querySelector( '.im-chat-input--txt-wrap > .placeholder' ).style.display = 'block';
+
+
+
+    if ( button.attaches !== null ) {
+      Array.from( deps.attaches.photo.children ).forEach( ( photo ) => {
+        photo.querySelector( '._close_btn' ).click();
+      } );
+    }
+
+
+
     this.createButton( button );
+
+
+    this._userTemplates.push( button );
+    this.saveConf();
   }
 }

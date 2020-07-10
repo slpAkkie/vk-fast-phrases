@@ -32,7 +32,7 @@ class _AppData {
     { "pos": 6, "style": "default", "alias": null, "message": 'Осуждаю', "attaches": null },
     { "pos": 7, "style": "default", "alias": null, "message": 'Ахапхахпхах', "attaches": null },
     { "pos": 8, "style": "default", "alias": null, "message": 'Получается так', "attaches": null },
-    { "pos": 9, "style": "default", "alias": "FFF", "message": '', "attaches": { "photo": "172226864_457266456" } }
+    { "pos": 9, "style": "default", "alias": "FFF", "message": '', "attaches": { "photo": [ "172226864_457266456" ] } }
   ];
 
   /**

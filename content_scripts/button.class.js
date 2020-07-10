@@ -39,10 +39,10 @@ class _Button {
     this._domObject.id = `vkfpButton${this._pos}`;
     this._domObject.classList.add( `vkfpButton` );
     this._domObject.addEventListener( `click`, this.send.bind( this ) );
-	
-	
-	
-	if ( this._attaches !== null ) this._domObject.classList.add( `vkfpButtonWithAttach` );
+
+
+
+    if ( this._attaches !== null && this._attaches !== undefined ) this._domObject.classList.add( `vkfpButtonWithAttach` );
 
 
 
@@ -75,20 +75,37 @@ class _Button {
 
 
     let deps = app.getDeps();
-    if ( deps.result === false ) return;
 
 
 
     deps.chatInput.textContent += this._message;
+
+
+
     for ( let key in this._attaches ) {
       let script = document.createElement( `script` );
+
       script.innerText = `
-	  try {
-		cur.addMedia[ 1 ].chooseMedia.pbind( '${key}', '${this._attaches[ key ]}', {} )();
-	  } catch { }
-	  `;
+        let addMediaIndex;
+        for (let i = 0; i < 100; i++) {
+          if (addMediaIndex !== undefined) break;
+          if (cur.addMedia[ i ] !== undefined) addMediaIndex = i;
+        }
+      `;
+
+      script.innerText += `try {`;
+
+      this._attaches[ key ].forEach( ( photoId ) => {
+        script.innerText += `cur.addMedia[ 1 ].chooseMedia.pbind( '${key}', '${photoId}', {} )();`;
+      } );
+
+      script.innerText += `} catch { }`;
+
+
+
       document.body.appendChild( script );
       script.remove();
+
     }
 
 
@@ -105,19 +122,23 @@ class _Button {
    */
   delete() {
 
-    app._buttons[ this._pos ].dom.remove();
+    this._domObject.remove();
 
 
 
-    delete app._buttons[ this._pos ];
-
-    for ( let i = this._pos; i < app.templates.length - 1; i++ ) {
-      app.templates[ i ] = app.templates[ i + 1 ];
-      this._pos = i;
-      app._buttons[ i ][ this._pos ] = i;
+    for ( let i = this._pos; i < app._userTemplates.length - 1; i++ ) {
+      app._userTemplates[ i ] = app._userTemplates[ i + 1 ];
+      app._userTemplates[ i ].pos = i;
+      app._buttons[ i ] = app._buttons[ i + 1 ];
+      app._buttons[ i ]._pos = i;
     }
 
-    app.templates.length -= 1;
+    app._userTemplates.length -= 1;
+    delete app._buttons[ app._userTemplates.length ];
+
+
+
+    app.saveConf();
 
   }
 
