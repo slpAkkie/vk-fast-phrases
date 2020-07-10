@@ -228,7 +228,11 @@ class _App {
       while ( alias === undefined || alias === null || alias === `` )
         alias = prompt( 'Сообщение не содержало текста\nВведите название для кнопки' );
 
-    else alias = 'Новая кнопка с фото';
+    else
+
+      while ( alias === undefined || alias === null || alias === `` )
+        if ( alias !== undefined ) return null;
+        else alias = prompt( 'Вы запросили ввод кратко названия\nВведите алиас ниже' );
 
 
 
@@ -281,21 +285,30 @@ class _App {
   addButton() {
     let deps = this.getDeps(),
       emoji = deps.chatInput.querySelectorAll( `img.emoji` ),
-      attaches = this.getAttaches();
+      attaches = this.getAttaches(),
+      alias = null;
 
 
 
     /** Если в поле пусто */
-    if ( deps.chatInput.innerHTML.length === 0 && attaches === null ) return;
+    if ( ( deps.chatInput.innerHTML.length === 0 || ( deps.chatInput.innerHTML.length === 1 && deps.chatInput.innerHTML[ 0 ] === `=` ) ) && attaches === null ) return;
 
     emoji.forEach( ( emoji ) => { emoji.replaceWith( emoji.getAttribute( `alt` ) ) } );
+
+
+
+    if ( deps.chatInput.innerHTML.length === 0 ) alias = this.getAlias( true );
+    else if ( deps.chatInput.innerHTML[ 0 ] === `=` ) {
+      alias = this.getAlias();
+      deps.chatInput.innerHTML = deps.chatInput.innerHTML.slice( 1 );
+    }
 
 
 
     let button = {
       "pos": this._userTemplates.length,
       "style": "default",
-      "alias": ( deps.chatInput.innerHTML.length === 0 ? this.getAlias( true ) : `` ),
+      "alias": alias,
       "message": deps.chatInput.innerHTML,
       "attaches": attaches
     };

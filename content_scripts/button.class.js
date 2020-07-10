@@ -48,7 +48,7 @@ class _Button {
 
     let buttonText = document.createElement( `span` );
     buttonText.classList.add( `vkfpText` );
-    buttonText.textContent = this._alias || this._message || `Кнопочка`;
+    buttonText.textContent = this._alias || this._message || `Как у вас это вышло о_О`;
 
 
 
@@ -86,11 +86,12 @@ class _Button {
       let script = document.createElement( `script` );
 
       script.innerText = `
-        let addMediaIndex;
-        for (let i = 0; i < 100; i++) {
-          if (addMediaIndex !== undefined) break;
-          if (cur.addMedia[ i ] !== undefined) addMediaIndex = i;
-        }
+        {
+          let addMediaIndex;
+          for (let i = 0; i < 100; i++) {
+            if (addMediaIndex !== undefined) break;
+            if (cur.addMedia[ i ] !== undefined) addMediaIndex = i;
+          }
       `;
 
       script.innerText += `try {`;
@@ -99,7 +100,7 @@ class _Button {
         script.innerText += `cur.addMedia[ 1 ].chooseMedia.pbind( '${key}', '${photoId}', {} )();`;
       } );
 
-      script.innerText += `} catch { }`;
+      script.innerText += `} catch { } }`;
 
 
 
