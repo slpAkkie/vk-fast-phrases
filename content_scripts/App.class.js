@@ -58,7 +58,9 @@ class _App {
 
 
   saveConf() {
-    chrome.storage.local.set( { "samples": JSON.stringify( this._userTemplates ) } );
+    try {
+      chrome.storage.local.set( { "samples": JSON.stringify( this._userTemplates ) } );
+    } catch { this.errorNotification( 'Произошла какая-то ошибка, которую мы не смогли обработать\nПожалуйста перезагрузите страницу' ); }
   }
 
 
@@ -125,7 +127,7 @@ class _App {
    */
   errorNotification( e ) {
 
-    alert( `Во время работы расширения произошла ошибка\nРабота расширения приостановлена` );
+    alert( `Во время работы расширения произошла ошибка\nРабота расширения приостановлена\nПерезагрузите страницу, что бы запустить его заново` );
     console.error( e );
 
     clearInterval( appData.intervalId );
@@ -224,16 +226,13 @@ class _App {
 
 
     if ( forced )
-
-      while ( alias === undefined || alias === null || alias === `` )
-        alias = prompt( 'Сообщение не содержало текста\nВведите название для кнопки' );
+      alias = prompt( 'Для этого сообщения необходим алиас:' );
 
     else
+      alias = prompt( 'Введите свой алиас:' );
 
-      while ( alias === undefined || alias === null || alias === `` )
-        if ( alias !== undefined ) return null;
-        else alias = prompt( 'Вы запросили ввод кратко названия\nВведите алиас ниже' );
 
+    if ( alias === undefined || alias === null || alias === `` ) alias = `Кнопка ${this._userTemplates.length + 1}`;
 
 
     return alias;
@@ -286,22 +285,40 @@ class _App {
     let deps = this.getDeps(),
       emoji = deps.chatInput.querySelectorAll( `img.emoji` ),
       attaches = this.getAttaches(),
+      askAlias = false,
       alias = null;
 
 
 
-    /** Если в поле пусто */
-    if ( ( deps.chatInput.innerHTML.length === 0 || ( deps.chatInput.innerHTML.length === 1 && deps.chatInput.innerHTML[ 0 ] === `=` ) ) && attaches === null ) return;
-
-    emoji.forEach( ( emoji ) => { emoji.replaceWith( emoji.getAttribute( `alt` ) ) } );
-
-
-
-    if ( deps.chatInput.innerHTML.length === 0 ) alias = this.getAlias( true );
-    else if ( deps.chatInput.innerHTML[ 0 ] === `=` ) {
-      alias = this.getAlias();
-      deps.chatInput.innerHTML = deps.chatInput.innerHTML.slice( 1 );
+    if ( attaches !== null ) {
+      Array.from( deps.attaches.photo.children ).forEach( ( photo ) => {
+        photo.querySelector( '._close_btn' ).click();
+      } );
     }
+
+
+
+    if ( emoji.length !== 0 ) emoji.forEach( ( emoji ) => { emoji.replaceWith( emoji.getAttribute( `alt` ) ) } );
+
+    let message = deps.chatInput.innerText.trim();
+
+
+
+    if ( message[ 0 ] === `=` ) {
+      askAlias = true;
+      message = message.slice( 1 );
+    }
+
+
+
+
+    /** Если в поле пусто */
+    if ( message.length === 0 && attaches === null ) return;
+
+
+
+    if ( askAlias ) alias = this.getAlias();
+    else if ( message.length === 0 ) alias = this.getAlias( true );
 
 
 
@@ -309,7 +326,7 @@ class _App {
       "pos": this._userTemplates.length,
       "style": "default",
       "alias": alias,
-      "message": deps.chatInput.innerHTML,
+      "message": message,
       "attaches": attaches
     };
 
@@ -319,14 +336,6 @@ class _App {
     let inputEvent = document.createEvent( `HTMLEvents` );
     inputEvent.initEvent( 'input', true, true );
     deps.chatInput.dispatchEvent( inputEvent );
-
-
-
-    if ( button.attaches !== null ) {
-      Array.from( deps.attaches.photo.children ).forEach( ( photo ) => {
-        photo.querySelector( '._close_btn' ).click();
-      } );
-    }
 
 
 
