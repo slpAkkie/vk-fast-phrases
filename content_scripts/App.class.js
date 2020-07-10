@@ -316,7 +316,9 @@ class _App {
 
 
     deps.chatInput.innerHTML = ``;
-    document.querySelector( '.im-chat-input--txt-wrap > .placeholder' ).style.display = 'block';
+    let inputEvent = document.createEvent( `HTMLEvents` );
+    inputEvent.initEvent( 'input', true, true );
+    deps.chatInput.dispatchEvent( inputEvent );
 
 
 
