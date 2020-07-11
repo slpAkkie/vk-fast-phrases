@@ -88,16 +88,13 @@ class _Button {
       script.innerText = `
         {
           let addMediaIndex;
-          for (let i = 0; i < 100; i++) {
-            if (addMediaIndex !== undefined) break;
-            if (cur.addMedia[ i ] !== undefined) addMediaIndex = i;
-          }
+		  for (i in cur.addMedia) { addMediaIndex = i; break; };
       `;
 
       script.innerText += `try {`;
 
       this._attaches[ key ].forEach( ( photoId ) => {
-        script.innerText += `cur.addMedia[ 1 ].chooseMedia.pbind( '${key}', '${photoId}', {} )();`;
+        script.innerText += `cur.addMedia[ addMediaIndex ].chooseMedia.pbind( '${key}', '${photoId}', {} )();`;
       } );
 
       script.innerText += `} catch { } }`;
