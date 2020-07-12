@@ -173,6 +173,9 @@ class _App {
     let buttonNew = document.createElement( `div` );
     buttonNew.id = `vkfpNew`;
     buttonNew.classList.add( `vkfpButton` );
+
+    buttonNew.addEventListener( 'drop', ( ( e ) => { this.wrapper.appendChild( document.querySelector( `#${e.dataTransfer.getData( 'text/plain' )}` ) ) } ).bind( this ) );
+
     buttonNew.addEventListener( `click`, this.addButton.bind( this ) );
 
 
@@ -196,6 +199,40 @@ class _App {
     this._buttons[ sample.pos ] = new _Button( sample );
     this.wrapper.append( this._buttons[ sample.pos ].dom );
 
+  }
+
+
+
+
+
+  shiftButtons( oldPos, newPos ) {
+    let transfer = [ this._buttons[ oldPos ], this._userTemplates[ oldPos ] ];
+
+    if ( oldPos > newPos ) {
+      for ( let i = oldPos; i > newPos; i-- ) {
+        this._userTemplates[ i ] = this._userTemplates[ i - 1 ];
+        this._buttons[ i ] = this._buttons[ i - 1 ];
+      }
+    } else if ( oldPos < newPos ) {
+      for ( let i = newPos; i < oldPos; i++ ) {
+        this._userTemplates[ i ] = this._userTemplates[ i + 1 ];
+        this._buttons[ i ] = this._buttons[ i + 1 ];
+      }
+    }
+
+
+
+    this._buttons[ newPos ] = transfer[ 0 ];
+    this._userTemplates[ newPos ] = transfer[ 1 ];
+
+
+
+    for ( let i = Math.min( oldPos, newPos ); i < Math.max( oldPos, newPos ); i++ ) {
+      this._userTemplates[ i ].pos = i;
+      this._buttons[ i ].pos = i;
+    }
+
+    this.saveConf();
   }
 
 

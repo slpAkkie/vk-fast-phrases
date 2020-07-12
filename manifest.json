@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "vkFastPhrases",
-    "version": "2.5.2.10",
+    "version": "2.5.3.12",
     "description": "A way to quickly send prepared messages",
     "author": "slpakkie",
     "permissions": [

@@ -31,6 +31,18 @@ class _Button {
 
 
   /**
+   * Установка позиции
+   * @param {number} value
+   */
+  set pos( value ) {
+    this._pos = value;
+  }
+
+
+
+
+
+  /**
    * Создание кнопки
    */
   create() {
@@ -38,6 +50,12 @@ class _Button {
     this._domObject = document.createElement( 'div' );
     this._domObject.id = `vkfpButton${this._pos}`;
     this._domObject.classList.add( `vkfpButton` );
+    this._domObject.setAttribute( 'draggable', 'true' );
+
+    this._domObject.addEventListener( 'dragstart', this.dragstart );
+
+    this._domObject.addEventListener( 'drop', this.drop );
+
     this._domObject.addEventListener( `click`, this.send.bind( this ) );
 
 
@@ -60,6 +78,31 @@ class _Button {
 
     this._domObject.append( buttonText, buttonDelete );
 
+  }
+
+
+
+
+
+  dragstart( event ) {
+    event.dataTransfer.setData( 'takenId', this.id );
+    event.dataTransfer.effectAllowed = `move`;
+    event.dataTransfer.dropEffect = `move`;
+  }
+
+
+
+
+
+  drop( event ) {
+    app.wrapper.insertBefore( document.querySelector( `#${event.dataTransfer.getData( 'takenId' )}` ), this );
+
+
+
+    let newPos = parseInt( this.id.slice( 10 ) ),
+      oldPos = parseInt( event.dataTransfer.getData( 'takenId' ).slice( 10 ) );
+
+    app.shiftButtons( oldPos, newPos );
   }
 
 
