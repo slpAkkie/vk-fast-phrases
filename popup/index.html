@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <title>VKFP Settings</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+  <h1>vkFastPhrases <small><sup><em id="js-version"></em></sup></small></h1>
+  <p>Проверьте актуальность вашей версии <a class="js-gotoGithub" href="#">здесь</a></p>
+
+  <h2>Что может расширение</h2>
+  <ul>
+    <li>
+      <h4>Отправка сообщений</h4>
+
+      <ul>
+        <li>Текстовые</li>
+        <li>С картинками</li>
+      </ul>
+    </li>
+    <li>Удаление кнопок</li>
+    <li>Перемещение кнопок</li>
+    <li>Изменение названия кнопки</li>
+  </ul>
+  <p>Прочитать о том, как пользоваться всеми возможностями расширения прочитайте гайд на <a class="js-gotoGithub"
+      href="#">этом</a> сайте</p>
+
+  <h2>Управление</h2>
+  <button class="storageControls" id="js-cleanStorage">Очистить список кнопок</button>
+  <button class="storageControls" id="js-wipeStorage">Сбросить хранилище</button>
+  <button class="storageControls" id="js-restoreStorage">Восстановить по умолчанию</button>
+  <button class="storageControls" id="js-dumpStorage">Вывести мою конфигурацию</button>
+
+  <p id="js-storageInfo"></p>
+
+  <h2 id="yourConf">Ваша конфигурация</h2>
+  <p id="logContent"></p>
+
+  <script src="_Popup.class.js"></script>
+  <script src="popup.js"></script>
+</body>
+
+</html>

@@ -1,11 +1,12 @@
 {
     "manifest_version": 2,
     "name": "vkFastPhrases",
-    "version": "1.2.4.10",
-    "description": "A way to quickly send prepared messages",
+    "version": "2.8.3.17",
+    "description": "Набор кнопок для часто используемых фраз или картинок",
     "author": "slpakkie",
     "permissions": [
-        "storage"
+        "storage",
+        "tabs"
     ],
     "content_scripts": [
         {
@@ -13,24 +14,26 @@
                 "https://vk.com/*"
             ],
             "css": [
-                "content_scripts/style.css"
+                "content/main.css",
+                "content/removeAds.css"
             ],
             "js": [
-                "content_scripts/settings.class.js",
-                "content_scripts/button.class.js",
-                "content_scripts/VKFP-app.js"
+                "content/_AppData.class.js",
+                "content/_Button.class.js",
+                "content/_App.class.js",
+                "content/app.js"
             ],
             "run_at": "document_idle"
         }
     ],
     "browser_action": {
         "default_icon": {
-            "72": "image/72.png"
+            "72": "image/icon/72.png"
         },
-        "default_title": "vkFastPhrases Settings",
-        "default_popup": "browser_action/popup.html"
+        "default_title": "vkFastPhrases Menu",
+        "default_popup": "popup/index.html"
     },
     "icons": {
-        "72": "image/72.png"
+        "72": "image/icon/72.png"
     }
 }
