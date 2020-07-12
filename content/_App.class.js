@@ -77,6 +77,11 @@ class _App {
       // Проверка открытой страницы
       if ( window.location.pathname.search( `/im` ) === -1 ) {
         appData.buttonsCreated = false;
+        if ( this.container !== undefined ) {
+          this.container.remove();
+          this.container = undefined;
+          this.wrapper = undefined;
+        }
         return;
       }
 
