@@ -9,6 +9,17 @@ class _Popup {
     document.querySelector( '#js-wipeStorage' ).addEventListener( 'click', this.wipeStorage );
     document.querySelector( '#js-restoreStorage' ).addEventListener( 'click', this.restoreStorage );
     document.querySelector( '#js-dumpStorage' ).addEventListener( 'click', this.dumpStorage );
+    document.querySelectorAll( '.js-gotoGithub' ).forEach( element => {
+      element.addEventListener( 'click', ( event ) => {
+        event.preventDefault(); chrome.tabs.create( { url: 'https:\/\/github.com/slpAkkie/vkFastPhrases' } )
+      } );
+    } );
+
+
+
+    chrome.management.getSelf( ( response ) => {
+      document.querySelector( '#js-version' ).textContent = response.version;
+    } )
   }
 
 
@@ -53,8 +64,10 @@ class _Popup {
 
   /** Выводит дамп хранилища */
   dumpStorage() {
-    let log = document.querySelector( '#js-log' );
-    chrome.storage.local.get( null, ( value ) => {
+    let log = document.querySelector( '#logContent' );
+    chrome.storage.local.get( 'samples', ( value ) => {
+      document.querySelector( '#yourConf' ).style.display = 'block';
+      document.querySelector( '#logContent' ).style.display = 'block';
       log.textContent = JSON.stringify( value );
     } );
   }

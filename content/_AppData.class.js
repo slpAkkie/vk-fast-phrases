@@ -23,16 +23,11 @@ class _AppData {
    * @readonly
    */
   _defaultSamples = [
-    { "pos": 0, "style": "default", "alias": "Послать на ***", "message": 'Пошел нахуй!🖕🏻', "attaches": null },
+    { "pos": 0, "style": "default", "alias": null, "message": 'Понимаю', "attaches": null },
     { "pos": 1, "style": "default", "alias": null, "message": 'Ясно', "attaches": null },
-    { "pos": 2, "style": "default", "alias": null, "message": 'Понятно', "attaches": null },
-    { "pos": 3, "style": "default", "alias": null, "message": 'Ага, ага', "attaches": null },
-    { "pos": 4, "style": "default", "alias": null, "message": 'Ммм...', "attaches": null },
-    { "pos": 5, "style": "default", "alias": null, "message": 'Понимаю', "attaches": null },
-    { "pos": 6, "style": "default", "alias": null, "message": 'Осуждаю', "attaches": null },
-    { "pos": 7, "style": "default", "alias": null, "message": 'Ахапхахпхах', "attaches": null },
-    { "pos": 8, "style": "default", "alias": null, "message": 'Получается так', "attaches": null },
-    { "pos": 9, "style": "default", "alias": "FFF", "message": '', "attaches": { "photo": [ "172226864_457266456" ] } }
+    { "pos": 2, "style": "default", "alias": null, "message": 'Привет', "attaches": null },
+    { "pos": 3, "style": "default", "alias": null, "message": 'Пока', "attaches": null },
+    { "pos": 4, "style": "default", "alias": null, "message": 'Спокойной ночи', "attaches": null }
   ];
 
   /**

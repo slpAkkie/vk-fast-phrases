@@ -2,6 +2,18 @@ html {
   width: 400px;
 }
 
+#yourConf {
+  display: none;
+}
+
+#logContent {
+  display: none;
+  overflow-wrap: anywhere;
+  padding: 5px 10px;
+  border: 1px solid #e6e6e6;
+  border-radius: 4px;
+}
+
 .storageControls {
   width: 100%;
   border: none;
