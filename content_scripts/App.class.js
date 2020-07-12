@@ -174,7 +174,9 @@ class _App {
     buttonNew.id = `vkfpNew`;
     buttonNew.classList.add( `vkfpButton` );
 
-    buttonNew.addEventListener( 'drop', ( ( e ) => { this.wrapper.appendChild( document.querySelector( `#${e.dataTransfer.getData( 'text/plain' )}` ) ) } ).bind( this ) );
+    buttonNew.addEventListener( 'drop', ( ( e ) => {
+      this.wrapper.appendChild( document.querySelector( `#${e.dataTransfer.getData( 'takenId' )}` ) )
+    } ).bind( this ) );
 
     buttonNew.addEventListener( `click`, this.addButton.bind( this ) );
 
