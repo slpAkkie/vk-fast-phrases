@@ -174,9 +174,10 @@ class _App {
     buttonNew.id = `vkfpNew`;
     buttonNew.classList.add( `vkfpButton` );
 
-    buttonNew.addEventListener( 'drop', ( ( e ) => {
-      this.wrapper.appendChild( document.querySelector( `#${e.dataTransfer.getData( 'takenId' )}` ) )
-    } ).bind( this ) );
+    buttonNew.addEventListener( 'drop', function ( event ) {
+      let i = parseInt( event.dataTransfer.getData( `takenId` ).slice( 10 ) );
+      app._buttons[ i ].drop( event, true );
+    } );
 
     buttonNew.addEventListener( `click`, this.addButton.bind( this ) );
 
@@ -207,6 +208,11 @@ class _App {
 
 
 
+  /**
+   * Обновляет в конфигурации позиции кнопок
+   * @param {number} oldPos
+   * @param {number} newPos
+   */
   shiftButtons( oldPos, newPos ) {
     let transfer = [ this._buttons[ oldPos ], this._userTemplates[ oldPos ] ];
 
@@ -215,8 +221,8 @@ class _App {
         this._userTemplates[ i ] = this._userTemplates[ i - 1 ];
         this._buttons[ i ] = this._buttons[ i - 1 ];
       }
-    } else if ( oldPos < newPos ) {
-      for ( let i = newPos; i < oldPos; i++ ) {
+    } else if ( oldPos < --newPos ) {
+      for ( let i = oldPos; i < newPos; i++ ) {
         this._userTemplates[ i ] = this._userTemplates[ i + 1 ];
         this._buttons[ i ] = this._buttons[ i + 1 ];
       }
@@ -229,9 +235,10 @@ class _App {
 
 
 
-    for ( let i = Math.min( oldPos, newPos ); i < Math.max( oldPos, newPos ); i++ ) {
+    for ( let i = Math.min( oldPos, newPos ); i <= Math.max( oldPos, newPos ); i++ ) {
       this._userTemplates[ i ].pos = i;
       this._buttons[ i ].pos = i;
+      this._buttons[ i ].dom.id = `vkfpButton${i}`;
     }
 
     this.saveConf();

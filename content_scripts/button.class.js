@@ -94,13 +94,18 @@ class _Button {
 
 
 
-  drop( event ) {
-    app.wrapper.insertBefore( document.querySelector( `#${event.dataTransfer.getData( 'takenId' )}` ), this );
+  drop( event, toEnd = false ) {
+    let newPos, oldPos = parseInt( event.dataTransfer.getData( 'takenId' ).slice( 10 ) );
 
+    if ( !toEnd ) {
+      app.wrapper.insertBefore( document.querySelector( `#${event.dataTransfer.getData( 'takenId' )}` ), this );
 
+      newPos = parseInt( this.id.slice( 10 ) );
+    } else {
+      app.wrapper.appendChild( document.querySelector( `#${event.dataTransfer.getData( 'takenId' )}` ) );
 
-    let newPos = parseInt( this.id.slice( 10 ) ),
-      oldPos = parseInt( event.dataTransfer.getData( 'takenId' ).slice( 10 ) );
+      newPos = app.wrapper.childElementCount;
+    }
 
     app.shiftButtons( oldPos, newPos );
   }
